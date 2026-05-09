@@ -4,7 +4,7 @@ import Heimu from './Heimu.astro';
 
 import type { CollectionEntry } from 'astro:content';
 import { render } from 'astro:content';
-import { processPostSync } from '../server/utils';
+import { processPost } from '../server/utils';
 import TimeMeta from './MetaWidgets/TimeMeta.astro';
 import TagsMeta from './MetaWidgets/TagsMeta.astro';
 import Meta from './MetaWidgets/Meta.astro';
@@ -17,7 +17,7 @@ const { post } = Astro.props;
 
 const { category, description, title, tags } = post.data;
 
-const { updateDate, pubDate } = processPostSync(post);
+const { updateDate, pubDate } = processPost(post);
 
 const { Content, headings } = await render(post);
 
