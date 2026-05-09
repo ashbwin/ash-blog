@@ -9,6 +9,7 @@ const {
   slideLayerPosition,
   slideLayerOffset,
   slideLayerClickOffset,
+  coverNoPadding,
 } = layout.component.PostLinkCard;
 
 const wrapperHoverTransformRules: string[] = [];
@@ -21,8 +22,6 @@ const slideLayerStylus =
   slideLayerStyle !== 'none'
     ? `
   .card.link-card {
-    background-color: transparent;
-    padding: 0;
     align-items: ${slideLayerPosition === 'left' ? 'flex-start' : 'flex-end'};
 
     &:hover {
@@ -79,12 +78,10 @@ const slideLayerStylus =
     }
 
     &>.wrapper {
-      position: relative;
-      padding: 24px;
       margin-${slideLayerPosition}: ${slideLayerInitialWidth};
-      background-color: var(--secondary-container);
-      border-radius: 14px;
     }
+
+    ${coverNoPadding ? `.cover { padding: 0; }` : ''}
   }
 `
     : '';
