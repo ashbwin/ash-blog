@@ -43,27 +43,43 @@ const customComponents = {
 </div>
 
 <style lang="stylus">
-  .article-title {
-    margin: 0.5rem 0;
-  }
+  .post-content {
+    .article-title {
+      margin: 0.5rem 0;
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
 
-  hr {
-    margin: 24px -8px
-    border-style: dashed;
-  }
+    hr {
+      margin: 24px -8px
+      border-style: dashed;
+      opacity: 0.5;
+    }
 
-  .metas {
-    color: var(--text);
-  }
+    .metas {
+      color: var(--text);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
 
-  .tag {
-    border-radius: 4px;
-    padding: 2px;
-    background-color: var(--primary-container);
-  }
+    .tag {
+      border-radius: 6px;
+      padding: 4px 8px;
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
 
-  .description {
-    margin-top: 16px;
-    color: var(--text);
+    .description {
+      margin-top: 16px;
+      color: var(--text-muted);
+      font-style: italic;
+      line-height: 1.6;
+    }
   }
 </style>
