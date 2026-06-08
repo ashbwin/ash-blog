@@ -35,7 +35,7 @@ const customComponents = {
     <TagsMeta tags={tags} />
   </div>
   <br />
-  <div class="description">描述：{description}</div>
+  {description?.trim() && <div class="description">描述：{description}</div>}
   <hr />
   <MarkdownWrapper>
     <Content components={customComponents} />

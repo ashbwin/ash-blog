@@ -88,7 +88,7 @@ const { avatar, name, bio, socialLinks } = authorConfig.authors[authorId] ?? {};
   }
 
   .avatar {
-    width: 224px;
+    width: auto;
     height: 224px;
     border-radius: 16px;
     display: block;
@@ -97,6 +97,7 @@ const { avatar, name, bio, socialLinks } = authorConfig.authors[authorId] ?? {};
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     flex-shrink: 0;
+    aspect-ratio: 1;
 
     &:hover {
       transform: scale(1.1);
