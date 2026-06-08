@@ -6,7 +6,6 @@ import { author, site } from '../../config';
 import { processPost } from '../../server/utils';
 import AuthorCard from '../../components/Cards/AuthorCard.astro';
 import PostLinkCard from '../../components/Cards/PostLinkCard.astro';
-import TagsCard from '../../components/Cards/TagsCard.astro';
 import { tagMap } from '../../utils/page-indices';
 
 export interface Props {
@@ -44,7 +43,12 @@ const filteredPosts = posts
   });
 ---
 
-<BasicLayout coverImage={site.defaultCover}>
+<BasicLayout
+  coverImage={site.defaultCover}
+  head={{
+    titleText: `标签: ${tagname}`,
+  }}
+>
   <Fragment slot="major">
     <main transition:name="post-content-card" class="link-cards">
       <h1>标签：{tagname}</h1>
@@ -71,7 +75,6 @@ const filteredPosts = posts
         />
       )
     }
-    <TagsCard transition:name="tags-card" />
   </Fragment>
 </BasicLayout>
 
