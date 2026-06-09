@@ -55,19 +55,17 @@ const filteredPosts = node
     <main transition:name="post-content-card" class="link-cards">
       <!-- 面包屑导航 -->
       <h1 class="breadcrumb">
-        <a href={baseurl.with('.')}>分类</a>: {
-          (() => {
-            const base: string[] = [];
-            return path.map((p, index) => {
-              base.push(p);
-              return (
-                <>
-                  {index !== 0 ? '>' : null}
-                  <a href={categoryurl.with(joinCategoryPath(base))}>{p}</a>
-                </>
-              );
-            });
-          })()
+        <a href={baseurl.with('.')}>分类</a>:
+        {
+          path.map((p, index) => {
+            const subPath = path.slice(0, index + 1);
+            return (
+              <>
+                {index !== 0 ? '>' : null}
+                <a href={categoryurl.with(joinCategoryPath(subPath))}>{p}</a>
+              </>
+            );
+          })
         }
       </h1>
 
@@ -94,11 +92,7 @@ const filteredPosts = node
         />
       )
     }
-    {
-      node.submap && node.submap.size > 0 && (
-        <CategoriesCard path={path} transition:name="categories-card" />
-      )
-    }
+    <CategoriesCard {path} transition:name="categories-card" />
   </Fragment>
 </BasicLayout>
 
