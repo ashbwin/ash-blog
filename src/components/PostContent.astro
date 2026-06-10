@@ -1,6 +1,7 @@
 ---
 import MarkdownWrapper from './MarkdownWrapper.astro';
 import Heimu from './Heimu.astro';
+import CopyrightNotice from './CopyrightNotice.astro';
 
 import type { CollectionEntry } from 'astro:content';
 import { render } from 'astro:content';
@@ -40,6 +41,8 @@ const customComponents = {
   <MarkdownWrapper>
     <Content components={customComponents} />
   </MarkdownWrapper>
+  <hr />
+  <CopyrightNotice post={post} />
 </div>
 
 <style lang="stylus">

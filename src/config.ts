@@ -5,6 +5,7 @@ export const site = cfg.defineSiteConfig({
   titleTemplate: "kirisauce's blog",
 
   coverImageStyle: 'half-parallax',
+  defaultLicense: 'CC-BY-4.0',
 });
 
 export const navbar = cfg.defineNavBarConfig({

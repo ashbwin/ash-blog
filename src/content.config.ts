@@ -1,6 +1,7 @@
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 import { defineCollection } from "astro:content";
+import { licensePreset } from "./types/config-types";
 
 // const image = () => z.url().transform((url) => {
 //   import.meta.glob(url, { base: path.resolve(__dirname, './assets') })
@@ -19,6 +20,14 @@ const blog = defineCollection({
 
     coverImage: z.optional(image()),
     coverImageAlt: z.string().optional(),
+
+    license: z
+      .union([
+        z.string(),
+        licensePreset(),
+        z.literal(false),
+      ])
+      .optional(),
   }),
 })
 
