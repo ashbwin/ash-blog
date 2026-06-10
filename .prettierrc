@@ -1,8 +1,7 @@
 {
   "plugins": [
     "prettier-plugin-astro",
-    "prettier-plugin-svelte",
-    "prettier-plugin-stylus"
+    "prettier-plugin-svelte"
   ],
   "tabWidth": 2,
   "singleQuote": true,
