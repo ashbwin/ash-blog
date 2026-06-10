@@ -78,9 +78,12 @@ export const siteConfig = () =>
         `The author name to be displayed in the copyright notice.\nIf not specified, \`author.defaultAuthor\` will be used instead.`,
       ),
 
-    defaultLicense: z.string().optional().describe(
-      'The default license preset key for blog posts.\nCan be overridden per-post via frontmatter `license` field.',
-    ),
+    defaultLicense: z
+      .string()
+      .optional()
+      .describe(
+        'The default license preset key for blog posts.\nCan be overridden per-post via frontmatter `license` field.',
+      ),
     licensePresets: z
       .record(z.string(), types.licensePreset())
       .default(builtinLicensePresets)

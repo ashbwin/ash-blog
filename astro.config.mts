@@ -21,12 +21,7 @@ export default defineConfig({
     remarkPlugins: [remarkHeadingAnchor],
   },
 
-  integrations: [
-    expressiveCode(),
-    mdx(),
-    svelte(),
-    patcher(),
-  ],
+  integrations: [expressiveCode(), mdx(), svelte(), patcher()],
 
   vite: {
     plugins: [

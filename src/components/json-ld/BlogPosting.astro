@@ -7,7 +7,16 @@ export interface Props {
 }
 
 const { post } = Astro.props;
-const { title, description, pubDate, updateDate, tags, category, coverImage, author: postAuthor } = post.data;
+const {
+  title,
+  description,
+  pubDate,
+  updateDate,
+  tags,
+  category,
+  coverImage,
+  author: postAuthor,
+} = post.data;
 
 const authorId = postAuthor ?? authorConfig.defaultAuthor;
 const authorData = authorId ? authorConfig.authors[authorId] : undefined;
@@ -16,7 +25,10 @@ const siteUrl = Astro.url.origin;
 const postUrl = `${siteUrl}/blog/${post.id}`;
 
 const rawAvatar = authorData?.avatar?.src ?? authorData?.avatar;
-const avatarUrl = typeof rawAvatar === 'string' ? rawAvatar.replace(/^rawimage\|/, '') : rawAvatar;
+const avatarUrl =
+  typeof rawAvatar === 'string'
+    ? rawAvatar.replace(/^rawimage\|/, '')
+    : rawAvatar;
 
 const person = authorData
   ? {
@@ -56,7 +68,4 @@ if (coverImage) {
 }
 ---
 
-<script
-  type="application/ld+json"
-  set:html={JSON.stringify(jsonLd, null, 0)}
-/>
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd, null, 0)} />

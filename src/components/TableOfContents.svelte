@@ -106,10 +106,8 @@
       const scrollContainer = document.getElementById('page');
       if (scrollContainer) {
         const elTop = el.getBoundingClientRect().top;
-        const containerTop =
-          scrollContainer.getBoundingClientRect().top;
-        const offset =
-          elTop - containerTop + scrollContainer.scrollTop - 80;
+        const containerTop = scrollContainer.getBoundingClientRect().top;
+        const offset = elTop - containerTop + scrollContainer.scrollTop - 80;
         scrollContainer.scrollTo({ top: offset, behavior: 'smooth' });
       }
       history.replaceState(null, '', `#${slug}`);

@@ -86,7 +86,10 @@
 <ul class="tree-list" class:root={depth === 0} style="--depth: {depth}">
   {#each items as item, i (item.label + i)}
     {@const isExpanded = isItemExpanded(item, i)}
-    <li class="tree-item" class:has-children={item.children && item.children.length > 0}>
+    <li
+      class="tree-item"
+      class:has-children={item.children && item.children.length > 0}
+    >
       <div class="item-row">
         {#if item.children && item.children.length > 0}
           <button
@@ -121,7 +124,8 @@
             href={item.href}
             class="item-label link"
             class:active={isItemActive(item)}
-            onclick={(e) => onLinkClick && item.slug ? onLinkClick(e, item.slug) : undefined}
+            onclick={(e) =>
+              onLinkClick && item.slug ? onLinkClick(e, item.slug) : undefined}
           >
             {item.label}
           </a>

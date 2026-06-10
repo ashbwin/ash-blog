@@ -36,17 +36,16 @@ const layoutProps = {
   </Fragment>
 
   <Fragment slot="major">
-    <main
-      transition:animate={dropdown()}
-      class="card article-content-card"
-    >
+    <main transition:animate={dropdown()} class="card article-content-card">
       <PostContent post={Astro.props.post} />
     </main>
   </Fragment>
 
   <Fragment slot="aside">
     {author && <AuthorCard transition:name="author-card" authorId={author} />}
-    <div class="toc-card card"><TableOfContents headings={headings} client:only /></div>
+    <div class="toc-card card">
+      <TableOfContents headings={headings} client:only />
+    </div>
   </Fragment>
 </BasicLayout>
 
@@ -74,4 +73,3 @@ const layoutProps = {
     overflow: auto;
   }
 </style>
-
