@@ -224,3 +224,25 @@
     {/if}
   </div>
 </div>
+
+<style lang="stylus">
+  .toc-root {
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: unquote("color-mix(in srgb, var(--text) 15%, transparent) transparent");
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: unquote("color-mix(in srgb, var(--text) 15%, transparent)");
+      border-radius: 3px;
+    }
+  }
+</style>

@@ -1,7 +1,7 @@
 ---
 import PostContent from '../components/PostContent.astro';
 import AuthorCard from '../components/Cards/AuthorCard.astro';
-import TableOfContents from '../components/TableOfContents.svelte';
+import TocCard from '../components/Cards/TocCard.astro';
 import BasicLayout from './BasicLayout.astro';
 
 import type { CollectionEntry } from 'astro:content';
@@ -43,9 +43,7 @@ const layoutProps = {
 
   <Fragment slot="aside">
     {author && <AuthorCard transition:name="author-card" authorId={author} />}
-    <div class="toc-card card">
-      <TableOfContents headings={headings} client:only />
-    </div>
+    <TocCard {headings} />
   </Fragment>
 </BasicLayout>
 
@@ -66,10 +64,4 @@ const layoutProps = {
     }
   }
 
-  .toc-card {
-    position: sticky;
-    top: 10vh;
-    max-height: 80vh;
-    overflow: auto;
-  }
 </style>
