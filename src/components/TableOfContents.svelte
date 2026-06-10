@@ -71,7 +71,10 @@
   import { onMount, onDestroy } from 'svelte';
   import TreeList from './TreeList.svelte';
 
-  const { headings }: { headings: TocHeading[] } = $props();
+  const {
+    headings,
+    autoScroll = true,
+  }: { headings: TocHeading[]; autoScroll?: boolean } = $props();
 
   const tree = $derived(buildTree(headings));
 
@@ -82,6 +85,18 @@
   const expanded = $derived({ ...autoExpanded, ...manualExpanded });
 
   let scrollCleanup: (() => void) | null = null;
+
+  /** toc-root DOM 引用，供 $effect 中 scrollIntoView 使用 */
+  let tocRoot: HTMLDivElement | null = $state(null);
+  /** 用户是否 hover 在 TOC 上，hover 时跳过自动滚动 */
+  let isHovering = false;
+
+  function handleMouseEnter() {
+    isHovering = true;
+  }
+  function handleMouseLeave() {
+    isHovering = false;
+  }
 
   function toggleManual(slug: string) {
     if (manualExpanded[slug]) {
@@ -134,6 +149,22 @@
     }
   }
 
+  // 当 activeSlug 变化时，自动将当前目录项滚动到 toc-root 可视区域内
+  $effect(() => {
+    if (!autoScroll) return;
+    const slug = activeSlug;
+    const root = tocRoot;
+    if (!slug || !root) return;
+
+    requestAnimationFrame(() => {
+      if (isHovering) return;
+      const activeItem = root.querySelector<HTMLElement>('.item-label.active');
+      if (activeItem) {
+        activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+  });
+
   onMount(() => {
     const scrollContainer = document.getElementById('page');
     if (!scrollContainer) return;
@@ -173,14 +204,23 @@
 </script>
 
 <!-- TOC 目录树 -->
-<div class="toc-body">
-  {#if tree.length > 0}
-    <TreeList
-      items={tree}
-      {expanded}
-      {activeSlug}
-      onToggle={toggleManual}
-      onLinkClick={handleLinkClick}
-    />
-  {/if}
+<div
+  class="toc-root"
+  role="navigation"
+  aria-label="Table of contents"
+  bind:this={tocRoot}
+  onmouseenter={handleMouseEnter}
+  onmouseleave={handleMouseLeave}
+>
+  <div class="toc-body">
+    {#if tree.length > 0}
+      <TreeList
+        items={tree}
+        {expanded}
+        {activeSlug}
+        onToggle={toggleManual}
+        onLinkClick={handleLinkClick}
+      />
+    {/if}
+  </div>
 </div>
