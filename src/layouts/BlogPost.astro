@@ -1,9 +1,11 @@
 ---
 import PostContent from '../components/PostContent.astro';
 import AuthorCard from '../components/Cards/AuthorCard.astro';
+import TableOfContents from '../components/TableOfContents.svelte';
 import BasicLayout from './BasicLayout.astro';
 
 import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
 import { author as authorConfig } from '../config';
 import { dropdown } from '../utils/transition';
 import BlogPosting from '../components/json-ld/BlogPosting.astro';
@@ -15,6 +17,8 @@ export type Props = {
 const { coverImage, author: postAuthor, title } = Astro.props.post.data;
 
 const author = postAuthor ?? authorConfig.defaultAuthor;
+
+const { headings } = await render(Astro.props.post);
 
 const layoutProps = {
   coverImage,
@@ -42,12 +46,17 @@ const layoutProps = {
 
   <Fragment slot="aside">
     {author && <AuthorCard transition:name="author-card" authorId={author} />}
+    <div class="toc-card card"><TableOfContents headings={headings} client:only /></div>
   </Fragment>
 </BasicLayout>
 
 <style lang="stylus">
   :global(.page:has(.cover-image) .article-content-card) {
     margin-top: calc(-1.5rem - 64px);
+  }
+
+  :global(.page aside) {
+    gap: 32px;
   }
 
   .article-content-card {
@@ -57,4 +66,12 @@ const layoutProps = {
       padding: 20px 16px;
     }
   }
+
+  .toc-card {
+    position: sticky;
+    top: 10vh;
+    max-height: 80vh;
+    overflow: auto;
+  }
 </style>
+
