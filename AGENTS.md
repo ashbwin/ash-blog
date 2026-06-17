@@ -68,7 +68,14 @@ astro-cakes/
     │   │   └── [...slug].astro  文章详情（动态路由）
     │   ├── category/[...category].astro  分类页面（动态路由，支持嵌套）
     │   └── tag/                 标签页面
-    ├── server/utils.ts          服务端工具：从文件系统获取日期、解析 Markdown 摘要
+    ├── server/
+    │   ├── icon-loader.ts       共享图标加载工具（与 Icon.astro 共用 @iconify/utils 管道）
+    │   ├── utils.ts             服务端工具：从文件系统获取日期、解析 Markdown 摘要
+    │   └── mdext/               Markdown 扩展（remark 插件集）
+    │       ├── index.ts         统一入口
+    │       ├── command-parser.ts 通用 ::cmd[arg]{attrs} 语法解析器
+    │       ├── inline-icon.ts   ::i[src]{attrs} 内联图标插件
+    │       └── parse-attrs.ts   属性字符串 key="val" 解析器
     ├── styles/                  样式（Stylus）
     │   ├── color.styl           OKLCH 调色板（浅色/深色双主题，色相可调）
     │   ├── variables.styl       CSS 变量 + 动画曲线 token
@@ -110,6 +117,8 @@ astro-cakes/
 | `src/content.config.ts`     | 博客 Frontmatter schema 定义                             |
 | `src/astro.ts`              | 构建时 HTML 后处理器（async script 注入）                |
 | `src/vite/index.ts`         | `virtual:dynamic-style` 插件（JS 驱动 CSS）              |
+| `src/server/icon-loader.ts` | 共享图标加载工具（Icon.astro 和 remark 插件共用管道）    |
+| `src/server/mdext/`         | 自定义 Markdown 扩展，提供 `::i[src]{attrs}` 内联图标语法 |
 | `src/styles/color.styl`     | OKLCH 调色板（修改主题色）                               |
 | `src/styles/variables.styl` | CSS 变量和动画曲线定义                                   |
 | `fonts/config.json`         | 字体子集配置文件                                         |
@@ -126,7 +135,7 @@ astro-cakes/
 - **响应式**: 自定义 `Ref<T>`/`Computed<T>` 类（基于 `EventTarget`），非 Svelte store。
 - **配置**: 所有配置通过 Zod schema 定义在 `src/types/config.ts` 中，在 `src/config.ts` 中调用 `define*Config()` 填充，导出给整个项目使用。
 - **动画 token**: 使用 `--expressive-*` 和 `--standard-*` CSS 变量，定义在 `variables.styl` 中，参考 `src/utils/consts.ts` 中的 `m3anim` 对象。
-- **Icon**: 使用 `@iconify-json/mdi` + `@iconify/utils` 的 `loadNodeIcon`，通过 `unplugin-icons` 在 Svelte 中使用 `~icons/mdi/` 导入，或通过 `Icon.astro` 组件按需加载。
+- **Icon**: Svelte 组件使用 `unplugin-icons`（`~icons/mdi/` 导入）。Markdown 中使用 `::i[icon-name]{attrs}` 语法通过 `remarkInlineIcon` 插件渲染内联 SVG。`Icon.astro` 组件和插件共用 `src/server/icon-loader.ts` 加载管道。
 
 ---
 
@@ -150,6 +159,8 @@ astro-cakes/
 - **内容集合定义**在 `src/content.config.ts`，修改文章 schema 时同步更新。
 - **配置是完全类型化的**：`src/types/config.ts` 中的 Zod schema 定义了 `siteConfig()` / `authorConfig()` / `themeConfig()` 等。不要在 `src/config.ts` 之外手动定义配置类型。
 - **样式求变**时优先修改 `src/styles/color.styl`（调色板）和 `src/styles/variables.styl`（动画 token）。
+- **Markdown 扩展 `src/server/mdext/`** 使用 `::命令名[参数]{属性}` 语法。当前支持 `::i` 命令（内联图标），通过 `command-parser.ts` 统一解析。添加新命令时：在 `mdext/` 新建插件文件 → `index.ts` 导出 → `astro.config.mts` remarkPlugins 注册。
+- **图标相关修改**涉及三处：`Icon.astro`（Astro 组件）、`src/server/icon-loader.ts`（共享加载逻辑）、`src/server/mdext/inline-icon.ts`（remark 插件）。修改时需同步检查三者行为一致。
 - **PostLinkCard 的交互覆盖层**由 `src/components/Cards/PostLinkCard.ts`（JS 模块动态生成 Stylus）驱动，通过 `virtual:dynamic-style` 插件加载。修改覆盖层行为时要同时关注 `.ts` 文件和 `.astro` 文件。
 - **编译在 Bun 上验证**：`bun run build` 会执行完整构建。如果依赖安装后构建失败，检查 `astro.config.mts` 中 Vite `external` 配置是否遗漏了新依赖。
 - **项目无 lint/test**：添加功能时建议自行添加类型检查（`tsc --noEmit`）作为验证步骤。
