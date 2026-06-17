@@ -4,6 +4,7 @@ import { blogurl } from '../../utils/url';
 import { generateId } from '../../utils/other';
 import { Image } from 'astro:assets';
 import { layout } from '../../config';
+import CategoryBreadcrumb from '../MetaWidgets/CategoryBreadcrumb.astro';
 import Label from '../Label.astro';
 import Meta from '../MetaWidgets/Meta.astro';
 import TimeMeta from '../MetaWidgets/TimeMeta.astro';
@@ -40,11 +41,11 @@ const uniqueId = generateId();
 >
   <div class="wrapper">
     <div class="content">
+      <CategoryBreadcrumb category={category} />
       <Label class="title" style="font-size:24px;">{post.data.title}</Label>
       <div class="metas">
         <TimeMeta icon="mdi:calendar-edit-outline" time={updateDate} />
         <TimeMeta icon="mdi:calendar-outline" time={pubDate} />
-        <Meta icon="mdi:category-outline" content={category} />
         <TagsMeta tags={tags} />
       </div>
       <div class="description">{description}</div>
@@ -232,11 +233,17 @@ const uniqueId = generateId();
     .metas {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px 0;
+      gap: 6px 8px;
       align-items: center;
+      width: 100%;
 
       @media (max-width: 1024px) {
-        gap: 4px 0;
+        gap: 4px 6px;
+      }
+
+      :global(.tags-row) {
+        width: 100%;
+        justify-content: flex-start;
       }
     }
 
