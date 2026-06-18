@@ -1,0 +1,83 @@
+---
+import BasicLayout from './BasicLayout.astro';
+import { getCollection } from 'astro:content';
+
+import { author, site, layout } from '../config';
+import { dropdown } from '../utils/transition';
+import { processPost } from '../server/utils';
+import AuthorCard from '../components/Cards/AuthorCard.astro';
+import PostLinkCard from '../components/Cards/PostLinkCard.astro';
+import CategoriesCard from '../components/Cards/CategoriesCard.astro';
+import TagsCard from '../components/Cards/TagsCard.astro';
+import { fade } from 'astro:transitions';
+import WebSite from '../components/json-ld/WebSite.astro';
+
+const displayPosts = (await getCollection('blog'))
+  .map(processPost)
+  .sort((a, b) => {
+    if (!a.updateDate || !b.updateDate) {
+      return 0;
+    }
+    return b.updateDate.getTime() - a.updateDate.getTime();
+  })
+  .slice(0, layout.home.latestPostsLimit) as any[];
+---
+
+<BasicLayout coverImage={site.defaultCover}>
+  <Fragment slot="head-extra">
+    <WebSite />
+  </Fragment>
+
+  <Fragment slot="major">
+    {site.title && <div class="front-text site-title">{site.title}</div>}
+    {
+      site.description && (
+        <div class="front-text site-description">{site.description}</div>
+      )
+    }
+
+    <main
+      transition:animate={dropdown()}
+      transition:name="home-links"
+      class="link-cards"
+    >
+      {
+        displayPosts.map((args) => {
+          return <PostLinkCard {...args} />;
+        })
+      }
+    </main>
+  </Fragment>
+
+  <Fragment slot="aside">
+    {
+      author.defaultAuthor && (
+        <AuthorCard
+          transition:name="author-card"
+          transition:animate={fade({ duration: 800 })}
+          authorId={author.defaultAuthor}
+        />
+      )
+    }
+    <CategoriesCard transition:name="categories-card" />
+    <TagsCard transition:name="tags-card" />
+  </Fragment>
+</BasicLayout>
+
+<style lang="stylus">
+  .link-cards {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    padding: 0 8px;
+  }
+
+  .front-text {
+    font-family: var(--font-monospace);
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin: 8px 0 16px 0;
+  }
+</style>

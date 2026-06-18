@@ -1,0 +1,47 @@
+---
+import { flattenClassList } from '../utils/other';
+import type { HTMLAttributes } from 'astro/types';
+
+export type Props = HTMLAttributes<'div'> & {
+  position?: 'left' | 'right';
+};
+
+const {
+  position = 'left',
+  'class:list': klassList,
+  class: klass,
+  ...attrs
+} = Astro.props;
+---
+
+<div
+  class:list={[
+    'label',
+    position,
+    ...flattenClassList(klassList),
+    ...flattenClassList(klass),
+  ]}
+  {...attrs}
+>
+  <div class="decoration"></div>
+  <div class="text"><slot /></div>
+</div>
+
+<style lang="stylus">
+  .label {
+    display: flex;
+    flex-direction: row;
+
+    &.right {
+      flex-direction: row-reverse;
+    }
+  }
+
+  .decoration {
+    align-self: stretch;
+    border: 3px solid var(--primary);
+    border-radius: 3px;
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+</style>

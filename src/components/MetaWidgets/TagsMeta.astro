@@ -1,0 +1,44 @@
+---
+import { tagurl } from '../../utils/url';
+
+export interface Props {
+  tags?: string[];
+}
+
+const { tags } = Astro.props;
+---
+
+{
+  tags && tags.length > 0 && (
+    <div class="tags-row">
+      {tags.map((tag) => (
+        <span
+          class="tag"
+          onclick={`window.__CAKES__.navigate(\`${tagurl.with(tag)}\`); event.preventDefault();`}
+        >
+          # {tag}
+        </span>
+      ))}
+    </div>
+  )
+}
+
+<style lang="stylus">
+  .tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .tag {
+    color: var(--primary);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: opacity var(--expressive-default-effects);
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+</style>

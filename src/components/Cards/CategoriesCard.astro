@@ -1,0 +1,62 @@
+---
+import {
+  categoryMap,
+  joinCategoryPath,
+  CategoryMap,
+} from '../../utils/page-indices';
+import { categoryurl } from '../../utils/url';
+import Label from '../Label.astro';
+import TreeList from '../TreeList.svelte';
+import type { TreeNode } from '../TreeList.svelte';
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  // 当前路径
+  path?: string[];
+
+  // 基础路径，生成的列表只会包含基础路径下的子路径
+  basePath?: string[];
+}
+
+const { basePath = [], path = [], ...other } = Astro.props;
+const node = categoryMap.index(basePath);
+
+function toTreeNodes(
+  map: CategoryMap<CollectionEntry<'blog'>>,
+  basePath: string[],
+): TreeNode[] {
+  if (!map.submap || map.submap.size === 0) return [];
+  return [...map.submap.entries()].map(([name, sub]) => {
+    const nodePath = basePath.concat([name]);
+    return {
+      label: `${name} (${sub.collectValues().length})`,
+      href: categoryurl.with(joinCategoryPath(nodePath)),
+      path: nodePath,
+      children: toTreeNodes(sub, nodePath),
+    };
+  });
+}
+
+const treeItems = node ? toTreeNodes(node, basePath) : [];
+---
+
+<div class="card categories-card" {...other}>
+  <Label style="font-size: 1.6rem; align-self: flex-start; margin-left: -16px;"
+    >{basePath.length > 0 ? '子分类' : '分类'}</Label
+  >
+  <TreeList
+    items={treeItems}
+    currentPath={path}
+    client:visible
+    transition:persist
+  />
+</div>
+
+<style lang="stylus">
+  .categories-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 32px;
+  }
+</style>

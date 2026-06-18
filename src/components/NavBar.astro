@@ -1,0 +1,143 @@
+---
+import Icon from './Icon.astro';
+import { navbar, site } from '../config';
+import MenuButton from './NavBar/MenuButton.svelte';
+import ColorSchemePanel from './NavBar/ColorSchemePanel.svelte';
+import ThemeColorPanel from './NavBar/ThemeColorPanel.svelte';
+
+const props = Astro.props;
+---
+
+<div class="nav-container">
+  <nav {...props}>
+    <div class="nav-part">
+      <slot name="left">
+        <a href={import.meta.env.BASE_URL ?? '/'} class="row"
+          >{navbar.icon && <Icon src={navbar.icon} />}{
+            navbar.homeText ?? site.title
+          }</a
+        >
+      </slot>
+    </div>
+    <div class="nav-part">
+      <slot name="center" />
+    </div>
+    <div class="nav-part" style="flex-direction: row-reverse;">
+      <slot name="right">
+        <MenuButton client:only target="#nav-color-scheme-switch"
+          ><Icon src="mdi:sun-moon-stars" /></MenuButton
+        >
+        <MenuButton client:only target="#nav-theme-color-panel"
+          ><Icon src="mdi:color" /></MenuButton
+        >
+      </slot>
+    </div>
+
+    <div class="dropdown-container">
+      <ColorSchemePanel class="dropdown right" client:only />
+      <ThemeColorPanel class="dropdown right" client:only />
+    </div>
+  </nav>
+</div>
+
+<style lang="stylus">
+  .nav-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    z-index: 500;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  nav {
+    position: relative;
+    flex: 0 0 56px;
+    width: 80%;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px -6px var(--shadow);
+    font-family: var(--font-sans-serif);
+    color: var(--secondary);
+
+    R = 20px;
+    border-bottom-left-radius: R;
+    border-bottom-right-radius: R;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    box-sizing: border-box;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.80;
+      z-index: -1;
+      background-color: var(--nav);
+      border-bottom-left-radius: R;
+      border-bottom-right-radius: R;
+    }
+  }
+
+  .nav-part {
+    display: flex;
+    flex-direction: row;
+  }
+
+  a {
+    text-decoration: none;
+    font-weight: bold;
+    font-family: var(--font-monospace);
+    color inherit;
+    svg {
+      position: relative;
+      top: -0.1em;
+    }
+  }
+
+  svg {
+    font-size: 20px;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+  }
+
+  // Dropdown Panels
+
+  .dropdown-container { 
+    display: block;
+    position: absolute;
+    top: calc(100% + 16px);
+    left: 0;
+    width: 100%;
+  }
+
+  .dropdown {
+    background-color: var(--primary-container);
+    padding: 12px;
+    border-radius: 12px;
+
+    &.right {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: auto;
+      height: auto;
+      margin-right: 16px;
+    }
+  }
+</style>

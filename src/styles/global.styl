@@ -1,0 +1,68 @@
+code
+  font-family: var(--font-monospace)
+
+a.nodefault
+  text-decoration: none
+  color: inherit
+
+.card
+  background-color: var(--surface)
+  border-radius: 20px
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1)
+  padding: 1.5rem
+
+.padded-icon-svg
+  font-size: 24px;
+
+:root::selection
+  color: var(--selection-text)
+  background-color: var(--selection-background)
+
+@keyframes dropdown
+  0%
+    transform: translate(0, 0)
+    opacity: 1
+  100%
+    transform: translate(0, 64px)
+    opacity: 0
+
+::view-transition-group(*)
+  animation-duration: 500ms
+  z-index: 2000
+
+::view-transition-group(clicked-title),
+::view-transition-group(clicked-category)
+  z-index: 2001
+
+::view-transition-old(clicked-title)
+  height: 100%;
+  width: auto;
+
+.cover-image::view-transition-old(clicked-cover)
+  height: 100%
+
+::view-transition-old(clicked-cover),
+::view-transition-new(clicked-cover)
+  height: 100%
+
+::view-transition-group(clicked-cover)
+  z-index: 100
+
+::view-transition-group(root),
+::view-transition-group(basic-layout-html)
+  z-index: -1000
+
+::view-transition-group(page-content)
+  z-index: -100
+
+::view-transition-group(home-links)
+  z-index: -100
+
+// 内容区块间距优化
+.article-content-card {
+  .markdown {
+    // 移除多余的间距规则，交由 common.styl 统一管理
+  }
+}

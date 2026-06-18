@@ -1,0 +1,277 @@
+---
+import { site, layout } from '../config';
+import HeadBase from '../components/HeadBase.astro';
+import { Image } from 'astro:assets';
+import NavBar from '../components/NavBar.astro';
+import LoadingIndicator from '../components/LoadingIndicator.astro';
+import PageFooter from '../components/PageFooter.astro';
+import { fade } from 'astro:transitions';
+
+export interface Props {
+  coverImage?: ImageMetadata;
+  head?: Parameters<typeof HeadBase>[0];
+}
+
+const { coverImage: pageCover, head } = Astro.props;
+
+const coverImage = (() => {
+  if (pageCover === undefined || pageCover === null) {
+    return site.defaultCover as ImageMetadata;
+  } else {
+    return pageCover;
+  }
+})();
+
+const PAGE_ATTR = 'data-basic-layout-page';
+---
+
+<html
+  lang={site.lang}
+  transition:animate={fade({ duration: '500ms' })}
+  transition:name="basic-layout-html"
+>
+  <head>
+    <HeadBase {...head} />
+    <slot name="head-extra" />
+  </head>
+  <body>
+    <LoadingIndicator />
+    <NavBar
+      transition:name="navbar"
+      id="navbar"
+      data-toggle-preset="slide-down"
+    />
+    <div class="page" id="page" {...{ [PAGE_ATTR]: '' }}>
+      {
+        coverImage && (
+          <div
+            data-transite-from-cover
+            transition:name="cover-image"
+            class:list={['cover-image', site.coverImageStyle]}
+          >
+            <Image src={coverImage} alt="Cover" />
+          </div>
+        )
+      }
+      <div class:list={['page-content', 'aside-' + layout.basic.aside]}>
+        <aside class="aside">
+          <slot name="aside" />
+        </aside>
+
+        <div class="major">
+          <slot name="major" />
+        </div>
+      </div>
+
+      <PageFooter />
+    </div>
+  </body>
+</html>
+
+<script>
+  /**
+   * This script block is used to preserve scroll position when navigating between pages.
+   */
+  let preservedScroll = 0.0;
+  let isOverScroll = false;
+  document.addEventListener('astro:before-swap', () => {
+    const el = document.querySelector(`#page`);
+    if (!el) {
+      return;
+    }
+    preservedScroll = el.scrollTop;
+    const elCover = el.querySelector('.cover-image');
+    if (!elCover) {
+      isOverScroll = true;
+      return;
+    }
+    isOverScroll = preservedScroll > elCover.clientHeight;
+  });
+  document.addEventListener('astro:page-load', () => {
+    const el = document.querySelector(`#page`);
+    if (!el) {
+      return;
+    }
+    const elCover = el.querySelector('.cover-image');
+    if (!elCover) {
+      el.scrollTo(0, 0);
+      return;
+    }
+    if (isOverScroll) {
+      el.scrollTo(0, elCover.clientHeight * 0.75);
+    } else {
+      el.scrollTo(0, preservedScroll);
+    }
+  });
+</script>
+
+<script>
+  /**
+   * This script block monitors for the page scrolling, and hides
+   * the navigation bar when the user scrolls down.
+   */
+
+  import { toggle } from '../client/toggler';
+
+  document.addEventListener('astro:page-load', () => {
+    const elNav = document.querySelector('#navbar') as HTMLElement | null;
+    const el = document.querySelector('#page');
+    if (!el || !elNav) {
+      return;
+    }
+
+    let oldScroll = el.scrollTop;
+    let accScroll = 0;
+    const listener = (e: Event) => {
+      const newScroll = el.scrollTop;
+      const delta = newScroll - oldScroll;
+
+      if (delta < 0 && accScroll < 0) {
+        accScroll = 0;
+        toggle(elNav);
+      } else if (accScroll > 50) {
+        accScroll = -1;
+        toggle(elNav);
+      } else if (accScroll >= 0 && delta > 0) {
+        accScroll += delta;
+      }
+
+      oldScroll = newScroll;
+    };
+    el.addEventListener('scroll', listener);
+  });
+</script>
+
+<style lang="stylus">
+  body {
+    background-color: var(--background);
+    font-family: var(--font-sans);
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  .page {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: var(--background);
+
+    parallax() {
+      transform-style: preserve-3d;
+      perspective: 1px;
+    }
+
+    &:has(.parallax) {
+      parallax();
+    }
+    &:has(.half-parallax) {
+      parallax();
+    }
+  }
+
+  .cover-image {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 0 0 auto;
+
+    &.static {
+      height: 100vh;
+    }
+
+    parallax() {
+      transform: translateZ(-1px) scale(2.05);
+    }
+
+    &.parallax {
+      height: 100vh;
+      parallax();
+    }
+
+    &.half-parallax {
+      height: 50vh;
+      transform-origin: 50% 100%;
+      parallax();
+    }
+
+    img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  // --- page-content START ---
+
+  .page-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 72px 0;
+    justify-content: center;
+    box-sizing: border-box;
+    z-index: 10;
+
+    &:where(.aside-right) {
+      flex-direction: row-reverse;
+    }
+
+    @media (max-width: 1024px) {
+      flex-direction: column-reverse;
+      align-items: center;
+      gap: 32px;
+    }
+  }
+
+  .aside {
+    flex: 0 1 280px;
+    min-width: 280px;
+
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: 1024px) {
+      max-width: 500px;
+      width: 100%;
+      padding: 0 12px;
+      box-sizing: border-box;
+    }
+  }
+
+  .major {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    box-sizing: border-box;
+
+    flex: 0 1 1250px;
+    width: 0;
+    padding: 0 1rem;
+
+    @media (max-width: 1024px) {
+      width: 100%;
+      padding: 0 12px;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .page-content {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .major {
+      padding: 0 12px;
+    }
+  }
+
+  // --- page-content END ---
+</style>

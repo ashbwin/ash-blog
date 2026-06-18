@@ -1,0 +1,178 @@
+---
+import '../styles/variables.styl';
+import '../styles/markdown/common.styl';
+import '../styles/markdown/github-card.styl';
+import '../styles/global.styl';
+
+import { loadIconSvg } from '../server/icon-loader';
+import type { IconResult } from '../server/icon-loader';
+import { site, theme } from '../config';
+import { Font } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import type { JsxElement } from 'typescript';
+import { AstroError } from 'astro/errors';
+import { ClientRouter } from 'astro:transitions';
+
+export interface Props {
+  titleText?: string;
+
+  cover?: ImageMetadata;
+  coverAlt?: string;
+
+  type?: 'website' | 'article';
+
+  post?: CollectionEntry<'blog'>;
+}
+
+const {
+  cover,
+  coverAlt,
+  titleText = site.title,
+  type = 'website',
+  post,
+} = Astro.props;
+
+// 构建时获取卡片用到的 SVG 图标
+function renderSvg(icon: IconResult, size = 16): string {
+  const attrs = Object.entries(icon.attribs)
+    .filter(([k]) => k !== 'width' && k !== 'height')
+    .map(([k, v]) => `${k}="${v}"`)
+    .join(' ');
+  return `<svg ${attrs} fill="currentColor" width="${size}" height="${size}">${icon.body}</svg>`;
+}
+
+const [gitIcon, starIcon, forkIcon] = await Promise.all([
+  loadIconSvg('mdi:github'),
+  loadIconSvg('mdi:star-outline'),
+  loadIconSvg('mdi:source-fork'),
+]);
+
+const githubIconSvg = renderSvg(gitIcon);
+const starIconSvg = renderSvg(starIcon, 14);
+const forkIconSvg = renderSvg(forkIcon, 14);
+---
+
+<meta charset="utf-8" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" href="/favicon.ico" />
+<meta name="viewport" content="width=device-width" />
+<meta name="generator" content={Astro.generator} />
+
+<ClientRouter />
+
+<!-- Font  -->
+<Font cssVariable="--font-monospace" />
+
+<script define:vars={{ theme, githubIconSvg, starIconSvg, forkIconSvg }}>
+  window.__CONFIG__ = {
+    theme,
+    icons: {
+      github: githubIconSvg,
+      star: starIconSvg,
+      fork: forkIconSvg,
+    },
+  };
+</script>
+<!-- @patch async_script -->
+<script>
+  import '../client/run/preference.ts?inline';
+  import '../client/run/utils.ts?inline';
+  import '../client/run/github-card.ts?inline';
+</script>
+
+<title>
+  {titleText}{site.titleTemplate ? ` | ${site.titleTemplate}` : ''}
+</title>
+
+<!-- Open Graph Protocol -->
+<meta property="og:title" content={titleText} />
+<meta property="og:site_name" content={site.title} />
+<meta property="og:type" content={type} />
+{
+  // Common Tags
+  (() => {
+    const elements: JsxElement[] = [];
+
+    let description: string | undefined;
+    if (type === 'article') {
+      description = post?.data.description;
+    }
+    description = description ?? site.description;
+    if (description)
+      elements.push(<meta property="og:description" content={description} />);
+
+    if (site.lang)
+      elements.push(<meta property="og:locale" content={site.lang} />);
+
+    return elements;
+  })()
+}
+{
+  // Article Tags
+  (() => {
+    if (type !== 'article') {
+      return;
+    } else if (!post) {
+      throw new AstroError(
+        'HeadBase type is article, but no post was provided.',
+      );
+    }
+    const elements: JsxElement[] = [];
+
+    const { author = [], category, pubDate, tags, updateDate } = post.data;
+
+    pubDate &&
+      elements.push(
+        <meta
+          property="article:published_time"
+          content={pubDate.toISOString()}
+        />,
+      );
+
+    updateDate &&
+      elements.push(
+        <meta
+          property="article:modified_time"
+          content={updateDate.toISOString()}
+        />,
+      );
+
+    category &&
+      elements.push(<meta property="article:section" content={category} />);
+
+    tags.forEach((tag) =>
+      elements.push(<meta property="article:tag" content={tag} />),
+    );
+
+    if (typeof author === 'string') {
+      elements.push(<meta property="article:author" content={author} />);
+    } else if (Array.isArray(author)) {
+      author.forEach((author) =>
+        elements.push(<meta property="article:author" content={author} />),
+      );
+    }
+
+    return elements;
+  })()
+}
+{
+  // Image Tags
+  (() => {
+    if (!cover) {
+      return;
+    }
+    const elements: JsxElement[] = [];
+
+    elements.push(
+      <meta property="og:image" content={cover.src} />,
+      <meta property="og:image:url" content={cover.src} />,
+      <meta property="og:image:secure_url" content={cover.src} />,
+    );
+
+    const alt = coverAlt ?? post?.data.coverImageAlt;
+    if (coverAlt)
+      elements.push(<meta property="og:image:alt" content={coverAlt} />);
+
+    return elements;
+  })()
+}
