@@ -8,13 +8,13 @@ export interface Props {
   class?: string;
 }
 
-const { category, class: className } = Astro.props;
+const { category, class: className, ...otherProps } = Astro.props;
 const categoryPath = category ? parseCategoryIndex(category) : [];
 ---
 
 {
   categoryPath.length > 0 && (
-    <div class:list={['category-breadcrumb', className]}>
+    <div class:list={['category-breadcrumb', className]} {...otherProps}>
       <Icon src="mdi:folder-outline" width="16" height="16" />
       {categoryPath.map((seg, index) => {
         const subPath = categoryPath.slice(0, index + 1);
