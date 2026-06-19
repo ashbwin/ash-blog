@@ -1,8 +1,8 @@
 import * as cfg from './types/config';
 
 export const site = cfg.defineSiteConfig({
-  title: "kirisauce's blog",
-  titleTemplate: "kirisauce's blog",
+  title: "ashbwin's blog",
+  titleTemplate: "ashbwin's blog",
 
   coverImageStyle: 'half-parallax',
   defaultLicense: 'CC-BY-4.0',
@@ -22,15 +22,15 @@ export const theme = cfg.defineThemeConfig({
 });
 
 export const author = cfg.defineAuthorConfig({
-  defaultAuthor: 'kirisauce',
+  defaultAuthor: 'ashbwin',
   authors: {
-    kirisauce: {
-      name: 'kirisauce',
+    ashbwin: {
+      name: 'ashbwin',
       bio: 'xun',
       avatar:
-        'rawimage|https://avatars.githubusercontent.com/u/81839503?v=4&size=64',
+        'rawimage|https://avatars.githubusercontent.com/u/101867999?v=4&size=64',
       socialLinks: {
-        github: 'https://github.com/kirisauce',
+        github: 'https://github.com/ashbwin',
         wechat: 'https://wx.qq.com/',
       },
     },
