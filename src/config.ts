@@ -28,7 +28,7 @@ export const author = cfg.defineAuthorConfig({
       name: 'ashbwin',
       bio: 'xun',
       avatar:
-        'rawimage|https://avatars.githubusercontent.com/u/101867999?v=4&size=64',
+        'rawimage|https://avatars.githubusercontent.com/u/101867999?v=4',
       socialLinks: {
         github: 'https://github.com/ashbwin',
         wechat: 'https://wx.qq.com/',
