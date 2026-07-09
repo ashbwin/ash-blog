@@ -1,10 +1,10 @@
 ## Cakes! 🍰
 
-[Cakes](https://github.com/kirisauce/astro-cakes) is a simple blog template for Astro, which is inspired by [Fuwari](https://github.com/saicaca/fuwari)
+[Cakes](https://github.com/ashbwin/ash-blog) is a simple blog template for Astro, which is inspired by [Fuwari](https://github.com/saicaca/fuwari)
 
 ## Demo
 
-[Here](https://kirisauce.netlify.app/) is my personal blog, which uses Cakes as the template.
+[Here](https://ashbwin.netlify.app/) is my personal blog, which uses Cakes as the template.
 
 ## Usage
 

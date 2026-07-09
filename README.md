@@ -1,12 +1,12 @@
-[English](https://github.com/kirisauce/astro-cakes/blob/main/README_en.md)
+[English](https://github.com/ashbwin/ashbwin/blob/main/README_en.md)
 
 ## Cakes! 🍰
 
-[Cakes](https://github.com/kirisauce/astro-cakes) 是一个简单的 Astro 博客模板，灵感来自于 [Fuwari](https://github.com/saicaca/fuwari)
+[Cakes](https://github.com/ashbwin/ash-blog) 是一个简单的 Astro 博客模板，灵感来自于 [Fuwari](https://github.com/saicaca/fuwari)
 
 ## 演示
 
-[这里](https://kirisauce.netlify.app/) 是我的个人博客，使用 Cakes 作为模板。
+[这里](https://ashbwin.netlify.app/) 是我的个人博客，使用 Cakes 作为模板。
 
 ## 使用方法
 
