@@ -31,7 +31,7 @@ export const author = cfg.defineAuthorConfig({
         'rawimage|https://avatars.githubusercontent.com/u/101867999?v=4',
       socialLinks: {
         github: 'https://github.com/ashbwin',
-        wechat: 'https://wx.qq.com/',
+        bilibili: 'https://space.bilibili.com/269017331',
       },
     },
   },
