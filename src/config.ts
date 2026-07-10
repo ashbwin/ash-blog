@@ -9,7 +9,7 @@ export const site = cfg.defineSiteConfig({
 });
 
 export const navbar = cfg.defineNavBarConfig({
-  icon: 'mdi:home-variant-outline',
+  icon: 'mingcute:home-2-line',
   homeText: 'Home',
 });
 
