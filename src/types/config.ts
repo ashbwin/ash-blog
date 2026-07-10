@@ -29,6 +29,10 @@ const builtinSites: Record<string, types.ExternalSite> = {
     name: 'WeChat',
     icon: 'mingcute:wechat-line',
   },
+  bilibili: {
+    name: 'BiliBili',
+    icon: 'mingcute:bilibili-line',
+  },
 };
 
 const builtinLicensePresets = {
